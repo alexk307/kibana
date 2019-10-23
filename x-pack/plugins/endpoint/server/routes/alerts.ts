@@ -60,6 +60,7 @@ async function handleArchive(context, request, response) {
         index: 'test_alert_data', // TODO
         id: alerts,
         body: { doc: { archived: true } },
+        refresh: 'true',
       }
     );
   } catch (error) {
@@ -132,7 +133,7 @@ async function handleAlerts(context, request, response) {
           query: {
             bool: {
               must: [{ term: { 'event.kind': 'alert' } }],
-              must_not: [{ term: { archived: false } }],
+              must_not: [{ term: { archived: true } }],
             },
           },
         },

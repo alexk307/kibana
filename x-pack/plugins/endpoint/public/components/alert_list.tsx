@@ -66,7 +66,7 @@ export const AlertList = ({ context }: { context: AppMountContext }) => {
 
   useEffect(() => {
     fetchAlertListData();
-  }, [data.pageSize, data.pageIndex, data.sortField, data.sortDirection, data.hits.length]);
+  }, [data.pageSize, data.pageIndex, data.sortField, data.sortDirection]);
 
   const onTableChange = ({ page = {}, sort = {} }: { page: any; sort: any }) => {
     const { index: pageIndex, size: pageSize } = page;
@@ -135,17 +135,8 @@ export const AlertList = ({ context }: { context: AppMountContext }) => {
         },
       });
 
-      // Remove elements that have been selected
-      selectedItems.forEach(item => {
-        data.hits.splice(data.hits.indexOf(item), 1);
-      });
-
-      // TODO: how to unselect once pressed?
-      data.selectedItems = [];
-      setData({
-        ...data,
-        selectedItems: [],
-      });
+      // Refresh the data in the table
+      fetchAlertListData();
     }
 
     return (
