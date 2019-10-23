@@ -54,7 +54,6 @@ async function handleArchive(context, request, response) {
   const alerts = request.query.alerts;
 
   let elasticsearchResponse;
-  const promises: Array<Promise<any>> = [];
   alerts.split(',').forEach(async function(alertID: string) {
     try {
       elasticsearchResponse = await context.core.elasticsearch.dataClient.callAsCurrentUser(
@@ -66,13 +65,12 @@ async function handleArchive(context, request, response) {
           refresh: 'true',
         }
       );
-      promises.push(elasticsearchResponse);
     } catch (error) {
       return response.internalError();
     }
   });
 
-  // TODO: this is stupid, refactor
+  // TODO: This is a hack and needs to be refactored. ES is not refreshed in time when the frontend makes the request to fetch new data.
   await new Promise(resolve =>
     setTimeout(() => {
       resolve();
