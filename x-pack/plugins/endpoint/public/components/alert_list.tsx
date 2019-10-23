@@ -66,7 +66,7 @@ export const AlertList = ({ context }: { context: AppMountContext }) => {
 
   useEffect(() => {
     fetchAlertListData();
-  }, [data.pageSize, data.pageIndex, data.sortField, data.sortDirection]);
+  }, [data.pageSize, data.pageIndex, data.sortField, data.sortDirection, data.hits.length]);
 
   const onTableChange = ({ page = {}, sort = {} }: { page: any; sort: any }) => {
     const { index: pageIndex, size: pageSize } = page;
@@ -134,6 +134,12 @@ export const AlertList = ({ context }: { context: AppMountContext }) => {
           alerts: toArchive.join(','), // TODO: seems strange that we can't use lists in query params
         },
       });
+
+      // Remove elements that have been selected
+      selectedItems.forEach((item) => {
+        data.hits.splice(data.hits.indexOf(item), 1);
+      })      
+      
 
       // TODO: how to unselect once pressed?
       data.selectedItems = [];

@@ -38,8 +38,27 @@ export function alertsRoutes(router: IRouter) {
 
 async function handleArchive(context, request, response) {
   // TODO: archive the alert
+  const alerts = request.query.alerts;
+  console.log(alerts)
+
+  let elasticsearchResponse
+  try {
+    elasticsearchResponse = await context.core.elasticsearch.dataClient.callAsCurrentUser(
+      'update',
+      {
+        index: "test_alert_data", // TODO
+        id: alerts,
+        body: {"doc": {"archived": true}},
+      }
+    );
+  }
+  catch (error) {
+    return response.internalError();
+  }
+
+
   return response.ok({
-    body: JSON.stringify(request.query),
+    body: JSON.stringify(elasticsearchResponse),
   });
 }
 
@@ -66,9 +85,11 @@ async function handleAlerts(context, request, response) {
           size: request.query.pageSize,
           sort: sortParams(),
           query: {
-            match: {
-              'event.kind': 'alert',
-            },
+
+            bool: {
+              must: [{term: {"event.kind": "alert"}}],
+              must_not: [{term: {"archived": false}}],
+            }
           },
         },
       }
