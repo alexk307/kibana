@@ -136,10 +136,9 @@ export const AlertList = ({ context }: { context: AppMountContext }) => {
       });
 
       // Remove elements that have been selected
-      selectedItems.forEach((item) => {
+      selectedItems.forEach(item => {
         data.hits.splice(data.hits.indexOf(item), 1);
-      })      
-      
+      });
 
       // TODO: how to unselect once pressed?
       data.selectedItems = [];
