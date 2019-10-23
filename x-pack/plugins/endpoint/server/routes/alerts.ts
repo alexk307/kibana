@@ -6,6 +6,7 @@
 
 import { schema } from '@kbn/config-schema';
 import { IRouter } from 'kibana/server';
+import { sleep } from '@elastic/eui';
 
 export function alertsRoutes(router: IRouter) {
   router.get(
@@ -53,19 +54,30 @@ async function handleArchive(context, request, response) {
   const alerts = request.query.alerts;
 
   let elasticsearchResponse;
-  try {
-    elasticsearchResponse = await context.core.elasticsearch.dataClient.callAsCurrentUser(
-      'update',
-      {
-        index: 'test_alert_data', // TODO
-        id: alerts,
-        body: { doc: { archived: true } },
-        refresh: 'true',
-      }
-    );
-  } catch (error) {
-    return response.internalError();
-  }
+  const promises: Array<Promise<any>> = [];
+  alerts.split(',').forEach(async function(alertID: string) {
+    try {
+      elasticsearchResponse = await context.core.elasticsearch.dataClient.callAsCurrentUser(
+        'update',
+        {
+          index: 'test_alert_data', // TODO
+          id: alertID,
+          body: { doc: { archived: true } },
+          refresh: 'true',
+        }
+      );
+      promises.push(elasticsearchResponse);
+    } catch (error) {
+      return response.internalError();
+    }
+  });
+
+  // TODO: this is stupid, refactor
+  await new Promise(resolve =>
+    setTimeout(() => {
+      resolve();
+    }, 700)
+  );
 
   return response.ok({
     body: JSON.stringify(elasticsearchResponse),
