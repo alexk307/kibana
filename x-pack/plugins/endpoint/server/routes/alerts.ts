@@ -50,8 +50,34 @@ export function alertsRoutes(router: IRouter) {
 
 async function handleArchive(context, request, response) {
   // TODO: archive the alert
+  const alerts = request.query.alerts;
+
+  let elasticsearchResponse;
+  alerts.split(',').forEach(async function(alertID: string) {
+    try {
+      elasticsearchResponse = await context.core.elasticsearch.dataClient.callAsCurrentUser(
+        'update',
+        {
+          index: 'test_alert_data', // TODO
+          id: alertID,
+          body: { doc: { metadata: {archived: true} } },
+          refresh: 'true',
+        }
+      );
+    } catch (error) {
+      return response.internalError();
+    }
+  });
+
+  // TODO: This is a hack and needs to be refactored. ES is not refreshed in time when the frontend makes the request to fetch new data.
+  await new Promise(resolve =>
+    setTimeout(() => {
+      resolve();
+    }, 400)
+  );
+
   return response.ok({
-    body: JSON.stringify(request.query),
+    body: JSON.stringify(elasticsearchResponse),
   });
 }
 
@@ -114,8 +140,9 @@ async function handleAlerts(context, request, response) {
           size: request.query.pageSize,
           sort: sortParams(),
           query: {
-            match: {
-              'event.kind': 'alert',
+            bool: {
+              must: [{ term: { 'event.kind': 'alert' } }],
+              must_not: [{ term: { 'metadata.archived': true } }],
             },
           },
         },
