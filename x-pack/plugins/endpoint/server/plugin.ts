@@ -11,6 +11,7 @@ import { createConfig$, EndpointConfigType } from './config';
 import { registerEndpointRoutes } from './routes/endpoints';
 import { EndpointAppContext } from './types';
 import { registerAlertRoutes } from './routes/alerts';
+import { registerWhitelistRoutes } from './routes/whitelist'
 
 export type EndpointPluginStart = void;
 export type EndpointPluginSetup = void;
@@ -70,6 +71,7 @@ export class EndpointPlugin
     addRoutes(router);
     registerEndpointRoutes(router, endpointContext);
     registerAlertRoutes(router);
+    registerWhitelistRoutes(router, endpointContext);
   }
 
   public start() {
