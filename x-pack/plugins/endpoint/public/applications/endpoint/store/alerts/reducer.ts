@@ -15,6 +15,7 @@ const initialState = (): AlertListState => {
     request_page_index: 0,
     result_from_index: 0,
     total: 0,
+    alertDetailsClick: '',
   };
 };
 
@@ -27,6 +28,11 @@ export const alertListReducer: Reducer<AlertListState, AppAction> = (
       ...state,
       alerts: action.payload.alerts,
     };
+  } else if (action.type === 'userClickedAlertDetails') {
+    return {
+      ...state,
+      alertDetailsClick: action.payload,
+    }
   }
 
   return state;

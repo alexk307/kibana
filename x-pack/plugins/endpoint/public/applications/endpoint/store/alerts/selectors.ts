@@ -7,3 +7,5 @@
 import { AlertListState } from '../../types';
 
 export const alertListData = (state: AlertListState) => state.alerts;
+export const alertDetailsClick = (state: AlertListState) => state.alertDetailsClick;
+export const alertDetailsClose = (state: AlertListState) => state.alertDetailsClose;

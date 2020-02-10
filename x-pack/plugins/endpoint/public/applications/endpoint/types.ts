@@ -22,4 +22,4 @@ export interface GlobalState {
 }
 
 export type AlertListData = AlertResultList;
-export type AlertListState = AlertResultList;
+export type AlertListState = AlertResultList & {alertDetailsClick: string};

@@ -11,4 +11,9 @@ interface ServerReturnedAlertsData {
   payload: AlertListData;
 }
 
-export type AlertAction = ServerReturnedAlertsData;
+interface UserClickedAlertDetails {
+  type: 'userClickedAlertDetails';
+  payload: string;
+}
+
+export type AlertAction = ServerReturnedAlertsData | UserClickedAlertDetails;

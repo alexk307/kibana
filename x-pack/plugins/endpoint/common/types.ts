@@ -72,6 +72,7 @@ export interface AlertData {
     version: string;
   };
   event: {
+    id: string;
     action: string;
   };
   file_classification: {

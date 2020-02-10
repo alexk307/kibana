@@ -5,12 +5,14 @@
  */
 
 import { memo, useState, useMemo } from 'react';
-import React from 'react';
-import { EuiDataGrid } from '@elastic/eui';
-import { useSelector } from 'react-redux';
+import React, { Component } from 'react';
+import { EuiDataGrid, EuiLink, EuiFlyout, EuiFlyoutHeader, EuiTitle, EuiFlyoutBody, EuiCodeBlock, EuiText } from '@elastic/eui';
+import { useSelector, useDispatch } from 'react-redux';
 import { i18n } from '@kbn/i18n';
 import * as selectors from '../../store/selectors';
 import { usePageId } from '../use_page_id';
+import { AlertAction } from '../../store/alerts';
+
 
 export const AlertIndex = memo(() => {
   usePageId('alertsPage');
@@ -31,6 +33,26 @@ export const AlertIndex = memo(() => {
   const [visibleColumns, setVisibleColumns] = useState(() => columns.map(({ id }) => id));
 
   const json = useSelector(selectors.alertListData);
+  const details = useSelector(selectors.alertDetailsClicked);
+
+  const dispatch: (action: AlertAction) => unknown = useDispatch();
+  const handleAlertClick = (alert_id: string) => {
+    dispatch(
+      {
+        'type': 'userClickedAlertDetails',
+        'payload': alert_id,
+      }
+    )
+  };
+
+  const handleFlyoutClose = () => {
+    dispatch(
+      {
+        'type': 'userClickedAlertDetails',
+        'payload': "",
+      }
+    )
+  };
 
   const renderCellValue = useMemo(() => {
     return ({ rowIndex, columnId }: { rowIndex: number; columnId: string }) => {
@@ -40,13 +62,13 @@ export const AlertIndex = memo(() => {
 
       const row = json[rowIndex];
 
+      const alert_type = i18n.translate(
+        'xpack.endpoint.application.endpoint.alerts.alertType.maliciousFileDescription',
+        {defaultMessage: 'Malicious File'}
+      )
+
       if (columnId === 'alert_type') {
-        return i18n.translate(
-          'xpack.endpoint.application.endpoint.alerts.alertType.maliciousFileDescription',
-          {
-            defaultMessage: 'Malicious File',
-          }
-        );
+      return <EuiLink onClick={() => {handleAlertClick(row.event.id)}}>{alert_type}</EuiLink>;
       } else if (columnId === 'event_type') {
         return row.event.action;
       } else if (columnId === 'os') {
@@ -67,7 +89,7 @@ export const AlertIndex = memo(() => {
   }, [json]);
 
   return (
-    <EuiDataGrid
+    <><EuiDataGrid
       aria-label="Alert List"
       rowCount={json.length}
       // Required. Sets up three columns, the last of which has a custom schema we later define down below.
@@ -82,5 +104,23 @@ export const AlertIndex = memo(() => {
       // Often used in combination with useEffect() to dynamically change the render.
       renderCellValue={renderCellValue}
     />
+
+    {details !== '' && (
+        <EuiFlyout onClose={handleFlyoutClose} aria-labelledby="flyoutTitle">
+        <EuiFlyoutHeader hasBorder>
+          <EuiTitle size="m">
+            <h2 id="flyoutTitle">Alert Details for {details}</h2>
+          </EuiTitle>
+        </EuiFlyoutHeader>
+        <EuiFlyoutBody>
+          <EuiText>
+            <p>
+              TODO: call the alert details API which doesn't exist yet
+            </p>
+          </EuiText>
+        </EuiFlyoutBody>
+      </EuiFlyout>
+    )}
+    </>
   );
 });

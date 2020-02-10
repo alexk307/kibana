@@ -12,6 +12,12 @@ export const alertListData = composeSelectors(
   alertListSelectors.alertListData
 );
 
+export const alertDetailsClicked = composeSelectors(
+  alertListStateSelector,
+  alertListSelectors.alertDetailsClick
+);
+
+
 /**
  * Returns the alert list state from within Global State
  */
