@@ -46,12 +46,15 @@ export interface AlertResultList {
   /**
    * The index of the requested page, starting at 0.
    */
-  request_page_index: number;
+  request_page_index: number | undefined;
 
   /**
    * The offset of the requested page, starting at 0.
    */
-  result_from_index: number;
+  result_from_index: number | undefined;
+
+  next: string;
+  prev: string;
 }
 
 export interface EndpointResultList {
@@ -66,13 +69,14 @@ export interface EndpointResultList {
 }
 
 export interface AlertData {
+  id: string;
   '@timestamp': Date;
   agent: {
     id: string;
     version: string;
   };
   event: {
-    id: string;
+    id: number;
     action: string;
   };
   file_classification: {
@@ -86,6 +90,9 @@ export interface AlertData {
     os: {
       name: string;
     };
+  };
+  process: {
+    pid: number;
   };
   thread: {};
 }

@@ -5,7 +5,7 @@
  */
 import { httpServerMock, loggingServiceMock } from 'src/core/server/mocks';
 import { EndpointConfigSchema } from '../../config';
-import { getPagingProperties, buildAlertListESQuery } from './alert_query_builders';
+import { getRequestData, buildAlertListESQuery } from './alert_query_builders';
 
 describe('test query builder', () => {
   describe('test query builder request processing', () => {
@@ -15,8 +15,8 @@ describe('test query builder', () => {
         logFactory: loggingServiceMock.create(),
         config: () => Promise.resolve(EndpointConfigSchema.validate({})),
       };
-      const queryParams = await getPagingProperties(mockRequest, mockCtx);
-      const query = await buildAlertListESQuery(queryParams);
+      const reqData = await getRequestData(mockRequest, mockCtx);
+      const query = await buildAlertListESQuery(reqData);
 
       expect(query).toEqual({
         body: {
@@ -26,6 +26,11 @@ describe('test query builder', () => {
           sort: [
             {
               '@timestamp': {
+                order: 'desc',
+              },
+            },
+            {
+              'event.id': {
                 order: 'desc',
               },
             },
@@ -48,8 +53,8 @@ describe('test query builder', () => {
         logFactory: loggingServiceMock.create(),
         config: () => Promise.resolve(EndpointConfigSchema.validate({})),
       };
-      const queryParams = await getPagingProperties(mockRequest, mockCtx);
-      const query = await buildAlertListESQuery(queryParams);
+      const reqData = await getRequestData(mockRequest, mockCtx);
+      const query = await buildAlertListESQuery(reqData);
 
       expect(query).toEqual({
         body: {
@@ -59,6 +64,11 @@ describe('test query builder', () => {
           sort: [
             {
               '@timestamp': {
+                order: 'desc',
+              },
+            },
+            {
+              'event.id': {
                 order: 'desc',
               },
             },
