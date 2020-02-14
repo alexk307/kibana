@@ -8,7 +8,7 @@ import { Dispatch, MiddlewareAPI } from 'redux';
 import { CoreStart } from 'kibana/public';
 import { EndpointListState } from './store/endpoint_list';
 import { AppAction } from './store/action';
-import { AlertResultList } from '../../../common/types';
+import { AlertResultList, WhitelistState } from '../../../common/types';
 
 export type MiddlewareFactory = (
   coreStart: CoreStart
@@ -19,6 +19,7 @@ export type MiddlewareFactory = (
 export interface GlobalState {
   readonly endpointList: EndpointListState;
   readonly alertList: AlertListState;
+  readonly whitelist: WhitelistState
 }
 
 export type AlertListData = AlertResultList;

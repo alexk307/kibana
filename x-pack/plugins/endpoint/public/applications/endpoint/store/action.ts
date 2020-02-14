@@ -7,5 +7,6 @@
 import { EndpointListAction } from './endpoint_list';
 import { AlertAction } from './alerts';
 import { RoutingAction } from './routing';
+import { WhitelistAction } from './whitelist/action';
 
-export type AppAction = EndpointListAction | AlertAction | RoutingAction;
+export type AppAction = EndpointListAction | AlertAction | RoutingAction | WhitelistAction;

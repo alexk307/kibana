@@ -82,6 +82,8 @@ export function buildQuery(reqData: AlertListRequestData): JsonObject {
     queries.push(dateRangeFilter);
   }
 
+  queries.push({"match": {"event.kind": "alert"}});
+
   // Optimize
   if (queries.length > 1) {
     return {
@@ -94,7 +96,9 @@ export function buildQuery(reqData: AlertListRequestData): JsonObject {
   }
 
   return {
-    match_all: {},
+    match: {
+      "event.kind": "alert"
+    },
   };
 }
 

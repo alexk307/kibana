@@ -147,3 +147,7 @@ export type AlertHits = AlertDataWrapper[];
  * The PageId type is used for the payload when firing userNavigatedToPage actions
  */
 export type PageId = 'alertsPage' | 'endpointListPage';
+
+export type WhitelistState = {
+  readonly selectedAttributes: ReadonlySet<string>;
+}

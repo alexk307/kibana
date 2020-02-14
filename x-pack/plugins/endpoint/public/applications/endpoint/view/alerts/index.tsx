@@ -12,6 +12,7 @@ import { i18n } from '@kbn/i18n';
 import * as selectors from '../../store/selectors';
 import { usePageId } from '../use_page_id';
 import { AlertAction } from '../../store/alerts';
+import { WhitelistComponent } from './whitelist';
 
 
 export const AlertIndex = memo(() => {
@@ -113,11 +114,7 @@ export const AlertIndex = memo(() => {
           </EuiTitle>
         </EuiFlyoutHeader>
         <EuiFlyoutBody>
-          <EuiText>
-            <p>
-              TODO: call the alert details API which doesn't exist yet
-            </p>
-          </EuiText>
+          <WhitelistComponent/>
         </EuiFlyoutBody>
       </EuiFlyout>
     )}
